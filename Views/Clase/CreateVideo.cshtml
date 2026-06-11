@@ -1,0 +1,81 @@
+@{
+    ViewData["Title"] = "Subir Video de Clase";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <h3 class="mb-4"><i class="bi bi-camera-video-fill me-2 text-primary"></i>Panel del Profesor — Subir Video</h3>
+
+        @if (TempData["Exito"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @TempData["Exito"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger">
+                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <div>@error.ErrorMessage</div>
+                }
+            </div>
+        }
+
+        <div class="card">
+            <div class="card-body p-4">
+                <form asp-action="CreateVideo" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Clase</label>
+                        <select name="claseId" class="form-select" required>
+                            <option value="">— Selecciona una clase —</option>
+                            @foreach (SelectListItem item in ViewBag.Clases)
+                            {
+                                <option value="@item.Value">@item.Text</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">URL del Video</label>
+                        <input type="url" name="videoUrl" class="form-control"
+                               placeholder="https://www.youtube.com/watch?v=..."
+                               required />
+                        <div class="form-text">
+                            <i class="bi bi-info-circle"></i>
+                            Compatible con YouTube, Google Drive, Vimeo y cualquier URL reproducible.
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Resumen de la Clase</label>
+                        <textarea name="resumen" class="form-control" rows="4"
+                                  placeholder="Describe brevemente los temas vistos en esta clase..."></textarea>
+                        <div class="form-text">Opcional. El estudiante lo verá junto al video.</div>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-cloud-upload-fill me-2"></i>Guardar y Notificar Estudiantes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-body">
+                <h6 class="mb-3"><i class="bi bi-question-circle me-1"></i>¿Cómo obtener la URL?</h6>
+                <ul class="list-unstyled mb-0 small text-muted">
+                    <li class="mb-2"><strong>YouTube:</strong> Clic en Compartir → Copiar enlace → pega aquí</li>
+                    <li class="mb-2"><strong>Google Drive:</strong> Clic derecho en el video → Obtener enlace → Cualquier persona con el enlace</li>
+                    <li><strong>Zoom / Teams:</strong> Copia el enlace de la grabación desde el correo o portal</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

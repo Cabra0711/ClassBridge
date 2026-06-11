@@ -1,0 +1,155 @@
+@model Estudiante
+@{
+    ViewData["Title"] = "Dashboard del Estudiante";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="mb-0"><i class="bi bi-person-circle me-2 text-primary"></i>@Model.Nombre</h3>
+        <small class="text-muted">@Model.Correo</small>
+    </div>
+    <form method="get" action="/Clase/Dashboard" class="d-flex align-items-center gap-2">
+        <label class="text-muted small mb-0">Cambiar estudiante:</label>
+        <select name="id" class="form-select form-select-sm" style="width:180px" onchange="this.form.submit()">
+            @foreach (SelectListItem item in ViewBag.Estudiantes)
+            {
+                if (item.Selected)
+                {
+                    <option value="@item.Value" selected="selected">@item.Text</option>
+                }
+                else
+                {
+                    <option value="@item.Value">@item.Text</option>
+                }
+            }
+        </select>
+    </form>
+</div>
+
+<!-- Estadísticas rápidas -->
+@{
+    int totalClases    = Model.Inscripciones.Sum(i => i.Materia.Clases.Count);
+    int conVideo       = Model.Inscripciones.Sum(i => i.Materia.Clases.Count(c => c.VideoClase != null));
+    int excusasAprobadas = Model.Excusas.Count(e => e.Estado == EstadoExcusa.Aprobada);
+    int excusasPendientes = Model.Excusas.Count(e => e.Estado == EstadoExcusa.Pendiente);
+}
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="card text-center p-3">
+            <div class="fs-2 text-primary fw-bold">@Model.Inscripciones.Count</div>
+            <div class="text-muted small">Materias inscritas</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card text-center p-3">
+            <div class="fs-2 text-info fw-bold">@totalClases</div>
+            <div class="text-muted small">Total clases</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card text-center p-3">
+            <div class="fs-2 text-success fw-bold">@excusasAprobadas</div>
+            <div class="text-muted small">Excusas aprobadas</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card text-center p-3">
+            <div class="fs-2 text-warning fw-bold">@excusasPendientes</div>
+            <div class="text-muted small">Excusas pendientes</div>
+        </div>
+    </div>
+</div>
+
+<!-- Materias y clases -->
+@foreach (var inscripcion in Model.Inscripciones)
+{
+    var materia = inscripcion.Materia;
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0"><i class="bi bi-book-fill me-2"></i>@materia.Nombre</h5>
+            <span class="badge bg-light text-primary">@materia.Clases.Count clase(s)</span>
+        </div>
+        <div class="card-body p-0">
+            @if (!materia.Clases.Any())
+            {
+                <p class="text-muted p-3 mb-0">No hay clases registradas para esta materia.</p>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Clase</th>
+                                <th>Fecha</th>
+                                <th>Video</th>
+                                <th>Excusa</th>
+                                <th class="text-center">Acceso</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var clase in materia.Clases.OrderByDescending(c => c.FechaClase))
+                            {
+                                var excusa = Model.Excusas.FirstOrDefault(e => e.ClaseId == clase.Id);
+                                var tieneVideo = clase.VideoClase != null;
+                                var aprobada = excusa?.Estado == EstadoExcusa.Aprobada;
+
+                                <tr>
+                                    <td>
+                                        <strong>@clase.Titulo</strong>
+                                        @if (!string.IsNullOrWhiteSpace(clase.Resumen))
+                                        {
+                                            <br /><small class="text-muted">@clase.Resumen</small>
+                                        }
+                                    </td>
+                                    <td class="text-nowrap">@clase.FechaClase.ToString("dd/MM/yyyy")</td>
+                                    <td>
+                                        @if (tieneVideo)
+                                        {
+                                            <span class="badge bg-success"><i class="bi bi-check-circle"></i> Disponible</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">Sin video</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (excusa == null)
+                                        {
+                                            <span class="text-muted">—</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-estado-@excusa.Estado">@excusa.Estado</span>
+                                        }
+                                    </td>
+                                    <td class="text-center">
+                                        @if (tieneVideo && aprobada)
+                                        {
+                                            <a href="/Clase/Details/@clase.Id?estudianteId=@Model.Id"
+                                               class="btn btn-sm btn-success">
+                                                <i class="bi bi-play-circle-fill"></i> Ver Video
+                                            </a>
+                                        }
+                                        else if (tieneVideo && !aprobada)
+                                        {
+                                            <span class="btn btn-sm btn-warning disabled">
+                                                <i class="bi bi-lock-fill"></i> Excusa pendiente
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="btn btn-sm btn-light disabled text-muted">
+                                                Sin video
+                                            </span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+}

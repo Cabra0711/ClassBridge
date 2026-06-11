@@ -1,0 +1,19 @@
+{
+  "Version": 1,
+  "Hash": "WkWW+OB5CkPkfp13m2zuDtWrWxT6szWlO7p2CO86LyQ=",
+  "Source": "IUE.DesatrasadorMVP",
+  "BasePath": "_content/IUE.DesatrasadorMVP",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "IUE.DesatrasadorMVP/wwwroot",
+      "Source": "IUE.DesatrasadorMVP",
+      "ContentRoot": "/home/rwadmin/Descargas/IUE.DesatrasadorMVP(1)/IUE.DesatrasadorMVP/wwwroot/",
+      "BasePath": "_content/IUE.DesatrasadorMVP",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": []
+}

@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="../buildMultiTargeting/IUE.DesatrasadorMVP.props" />
+</Project>

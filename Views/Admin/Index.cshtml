@@ -1,0 +1,112 @@
+@using IUE.DesatrasadorMVP.Models
+@model IEnumerable<ApplicationUser>
+@{
+    ViewData["Title"] = "Panel de administración";
+    var roles = (IEnumerable<Microsoft.AspNetCore.Identity.IdentityRole>)ViewBag.Roles;
+    var profesores = (IEnumerable<ApplicationUser>)ViewBag.Profesores;
+    var estudiantes = (IEnumerable<ApplicationUser>)ViewBag.Estudiantes;
+    var materias = (IEnumerable<Materia>)ViewBag.Materias;
+}
+<div class="row g-4">
+    <div class="col-12">
+        <div class="card p-4">
+            <h3 class="mb-3">Panel de administración</h3>
+            <p class="text-muted mb-0">Gestión completa de roles, profesores y estudiantes.</p>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="card p-4">
+            <h5 class="mb-3">Crear profesor</h5>
+            <form asp-action="CrearProfesor" method="post" class="vstack gap-2">
+                <input class="form-control" name="nombreCompleto" placeholder="Nombre completo" required />
+                <input class="form-control" name="email" type="email" placeholder="Correo@iue.edu.co" required />
+                <input class="form-control" name="password" type="password" placeholder="Contraseña temporal" required />
+                <button class="btn btn-success">Agregar profesor</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="card p-4">
+            <h5 class="mb-3">Estudiantes</h5>
+            <div class="vstack gap-2">
+                @foreach (var estudiante in estudiantes)
+                {
+                    <div class="border rounded p-3 d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>@estudiante.NombreCompleto</strong><br />
+                            <small class="text-muted">@estudiante.Email</small>
+                        </div>
+                        <form asp-action="EliminarEstudiante" method="post">
+                            <input type="hidden" name="userId" value="@estudiante.Id" />
+                            <button class="btn btn-outline-danger btn-sm">Eliminar</button>
+                        </form>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="card p-4">
+            <h5 class="mb-3">Asignar roles</h5>
+            <div class="table-responsive">
+                <table class="table table-sm align-middle">
+                    <thead><tr><th>Usuario</th><th>Rol</th><th>Acción</th></tr></thead>
+                    <tbody>
+                        @foreach (var user in Model)
+                        {
+                            <tr>
+                                <td>@user.NombreCompleto <br /><small class="text-muted">@user.Email</small></td>
+                                <td>
+                                    <form asp-action="AsignarRol" method="post" class="d-flex gap-2">
+                                        <input type="hidden" name="userId" value="@user.Id" />
+                                        <select name="roleName" class="form-select form-select-sm">
+                                            @foreach (var role in roles)
+                                            {
+                                                var selected = user.Email == "admin@iue.edu.co" && role.Name == "Admin" ? "selected" : string.Empty;
+                                                <option value="@role.Name" selected="@selected">@role.Name</option>
+                                            }
+                                        </select>
+                                        <button class="btn btn-sm btn-primary">Guardar</button>
+                                    </form>
+                                </td>
+                                <td></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="card p-4">
+            <h5 class="mb-3">Asignar profesores a materias</h5>
+            <div class="vstack gap-3">
+                @foreach (var materia in materias)
+                {
+                    <form asp-action="AsignarProfesorMateria" method="post" class="border rounded p-3">
+                        <input type="hidden" name="materiaId" value="@materia.Id" />
+                        <div class="d-flex justify-content-between gap-3 align-items-center">
+                            <div>
+                                <strong>@materia.Nombre</strong><br />
+                                <small class="text-muted">@((materia.Profesor?.NombreCompleto) ?? "Sin profesor asignado")</small>
+                            </div>
+                            <select name="profesorId" class="form-select form-select-sm" style="max-width: 240px;">
+                                <option value="">Sin asignar</option>
+                                @foreach (var profesor in profesores)
+                                {
+                                    var selected = materia.ProfesorId == profesor.Id ? "selected" : string.Empty;
+                                    <option value="@profesor.Id" selected="@selected">@profesor.NombreCompleto (@profesor.Email)</option>
+                                }
+                            </select>
+                            <button class="btn btn-sm btn-outline-primary">Guardar</button>
+                        </div>
+                    </form>
+                }
+            </div>
+        </div>
+    </div>
+</div>

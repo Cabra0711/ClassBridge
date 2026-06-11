@@ -1,0 +1,19 @@
+@using Microsoft.AspNetCore.Identity
+@using IUE.DesatrasadorMVP.Models
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <div class="d-flex align-items-center gap-2 text-white-50 small">
+        <span>Hola, @User.Identity?.Name</span>
+        <a class="btn btn-outline-light btn-sm" asp-controller="Account" asp-action="Logout">Salir</a>
+    </div>
+}
+else
+{
+    <div class="d-flex align-items-center gap-2">
+        <a class="btn btn-outline-light btn-sm" asp-controller="Account" asp-action="Login">Entrar</a>
+        <a class="btn btn-light btn-sm" asp-controller="Account" asp-action="Register">Registrarse</a>
+    </div>
+}
