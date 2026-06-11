@@ -1,16 +1,19 @@
 using IUE.DesatrasadorMVP.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace IUE.DesatrasadorMVP.Controllers;
 
 public class AccountController : Controller
 {
+    private readonly AppDbContext _db;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
 
-    public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+    public AccountController(AppDbContext db, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
     {
+        _db = db;
         _userManager = userManager;
         _signInManager = signInManager;
     }
@@ -26,18 +29,22 @@ public class AccountController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Login(string email, string password, string? returnUrl = null)
     {
-        var result = await _signInManager.PasswordSignInAsync(email, password, isPersistent: true, lockoutOnFailure: false);
-        if (result.Succeeded)
+        var user = await _userManager.FindByEmailAsync(email) ?? await _userManager.FindByNameAsync(email);
+
+        if (user != null)
         {
-            var user = await _userManager.FindByEmailAsync(email);
-            if (user != null)
+            var result = await _signInManager.PasswordSignInAsync(user.UserName!, password, isPersistent: true, lockoutOnFailure: false);
+            if (result.Succeeded)
             {
                 if (await _userManager.IsInRoleAsync(user, "Admin"))
                     return RedirectToAction("Index", "Admin");
+
                 if (await _userManager.IsInRoleAsync(user, "Profesor"))
                     return RedirectToAction("Index", "Profesor");
+
+                var estudiante = await AsegurarEstudianteAsync(user);
+                return RedirectToAction("Dashboard", "Clase", new { id = estudiante?.Id ?? 1 });
             }
-            return RedirectToLocal(returnUrl);
         }
 
         ModelState.AddModelError(string.Empty, "Correo o contraseña inválidos.");
@@ -69,8 +76,9 @@ public class AccountController : Controller
         if (result.Succeeded)
         {
             await _userManager.AddToRoleAsync(user, "Estudiante");
+            var estudiante = await AsegurarEstudianteAsync(user);
             await _signInManager.SignInAsync(user, isPersistent: true);
-            return RedirectToAction("Dashboard", "Clase", new { id = 1 });
+            return RedirectToAction("Dashboard", "Clase", new { id = estudiante?.Id ?? 1 });
         }
 
         foreach (var error in result.Errors)
@@ -79,12 +87,30 @@ public class AccountController : Controller
         return View();
     }
 
+    [HttpGet]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Logout()
     {
         await _signInManager.SignOutAsync();
-        return RedirectToAction("Login", "Account");
+        return RedirectToAction(nameof(Login));
+    }
+
+    private async Task<Estudiante?> AsegurarEstudianteAsync(ApplicationUser user)
+    {
+        var estudiante = await _db.Estudiantes.FirstOrDefaultAsync(e => e.Correo == user.Email);
+        if (estudiante != null)
+            return estudiante;
+
+        estudiante = new Estudiante
+        {
+            Nombre = user.NombreCompleto ?? user.UserName ?? user.Email ?? "Estudiante",
+            Correo = user.Email ?? user.UserName ?? string.Empty
+        };
+
+        _db.Estudiantes.Add(estudiante);
+        await _db.SaveChangesAsync();
+        return estudiante;
     }
 
     private IActionResult RedirectToLocal(string? returnUrl)

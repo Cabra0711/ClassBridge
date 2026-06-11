@@ -1,5 +1,7 @@
 is_global = true
 build_property.TargetFramework = net8.0
+build_property.TargetFrameworkIdentifier = .NETCoreApp
+build_property.TargetFrameworkVersion = v8.0
 build_property.TargetPlatformMinVersion = 
 build_property.UsingMicrosoftNETSdkWeb = true
 build_property.ProjectTypeGuids = 
@@ -9,59 +11,65 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = IUE.DesatrasadorMVP
 build_property.RootNamespace = IUE.DesatrasadorMVP
-build_property.ProjectDir = /home/rwadmin/Descargas/IUE.DesatrasadorMVP(1)/IUE.DesatrasadorMVP/
+build_property.ProjectDir = C:\Users\user\Documents\ClassBridge\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 8.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = /home/rwadmin/Descargas/IUE.DesatrasadorMVP(1)/IUE.DesatrasadorMVP
+build_property.MSBuildProjectDirectory = C:\Users\user\Documents\ClassBridge
 build_property._RazorSourceGeneratorDebug = 
+build_property.EffectiveAnalysisLevelStyle = 8.0
+build_property.EnableCodeStyleSeverity = 
 
-[/home/rwadmin/Descargas/IUE.DesatrasadorMVP(1)/IUE.DesatrasadorMVP/Views/Account/Login.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWNjb3VudC9Mb2dpbi5jc2h0bWw=
+[C:/Users/user/Documents/ClassBridge/Views/Account/Login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxMb2dpbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/rwadmin/Descargas/IUE.DesatrasadorMVP(1)/IUE.DesatrasadorMVP/Views/Account/Register.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWNjb3VudC9SZWdpc3Rlci5jc2h0bWw=
+[C:/Users/user/Documents/ClassBridge/Views/Account/Register.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxSZWdpc3Rlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/rwadmin/Descargas/IUE.DesatrasadorMVP(1)/IUE.DesatrasadorMVP/Views/Admin/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRtaW4vSW5kZXguY3NodG1s
+[C:/Users/user/Documents/ClassBridge/Views/Admin/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/rwadmin/Descargas/IUE.DesatrasadorMVP(1)/IUE.DesatrasadorMVP/Views/Clase/CreateVideo.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2xhc2UvQ3JlYXRlVmlkZW8uY3NodG1s
+[C:/Users/user/Documents/ClassBridge/Views/Clase/CreateVideo.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xhc2VcQ3JlYXRlVmlkZW8uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/rwadmin/Descargas/IUE.DesatrasadorMVP(1)/IUE.DesatrasadorMVP/Views/Clase/Dashboard.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2xhc2UvRGFzaGJvYXJkLmNzaHRtbA==
+[C:/Users/user/Documents/ClassBridge/Views/Clase/Dashboard.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xhc2VcRGFzaGJvYXJkLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/rwadmin/Descargas/IUE.DesatrasadorMVP(1)/IUE.DesatrasadorMVP/Views/Clase/Details.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2xhc2UvRGV0YWlscy5jc2h0bWw=
+[C:/Users/user/Documents/ClassBridge/Views/Clase/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xhc2VcRGV0YWlscy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/rwadmin/Descargas/IUE.DesatrasadorMVP(1)/IUE.DesatrasadorMVP/Views/Clase/Excusas.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2xhc2UvRXhjdXNhcy5jc2h0bWw=
+[C:/Users/user/Documents/ClassBridge/Views/Clase/EnviarExcusa.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xhc2VcRW52aWFyRXhjdXNhLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/rwadmin/Descargas/IUE.DesatrasadorMVP(1)/IUE.DesatrasadorMVP/Views/Profesor/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUHJvZmVzb3IvSW5kZXguY3NodG1s
+[C:/Users/user/Documents/ClassBridge/Views/Clase/Excusas.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xhc2VcRXhjdXNhcy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/rwadmin/Descargas/IUE.DesatrasadorMVP(1)/IUE.DesatrasadorMVP/Views/Shared/_Layout.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19MYXlvdXQuY3NodG1s
+[C:/Users/user/Documents/ClassBridge/Views/Profesor/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZmVzb3JcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/rwadmin/Descargas/IUE.DesatrasadorMVP(1)/IUE.DesatrasadorMVP/Views/Shared/_LoginPartial.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19Mb2dpblBhcnRpYWwuY3NodG1s
+[C:/Users/user/Documents/ClassBridge/Views/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/rwadmin/Descargas/IUE.DesatrasadorMVP(1)/IUE.DesatrasadorMVP/Views/_ViewImports.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+[C:/Users/user/Documents/ClassBridge/Views/Shared/_LoginPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9Mb2dpblBhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/rwadmin/Descargas/IUE.DesatrasadorMVP(1)/IUE.DesatrasadorMVP/Views/_ViewStart.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvX1ZpZXdTdGFydC5jc2h0bWw=
+[C:/Users/user/Documents/ClassBridge/Views/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Documents/ClassBridge/Views/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 

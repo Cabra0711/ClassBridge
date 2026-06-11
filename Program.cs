@@ -6,8 +6,19 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 
+var useInMemoryDatabase = builder.Configuration.GetValue<bool>("UseInMemoryDatabase");
+
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+{
+    if (useInMemoryDatabase)
+    {
+        options.UseInMemoryDatabase("IUEDesatrasadorDb");
+    }
+    else
+    {
+        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    }
+});
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
@@ -40,6 +51,9 @@ app.UseAuthorization();
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
+    var db = services.GetRequiredService<AppDbContext>();
+    db.Database.EnsureCreated();
+
     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
     var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
 
@@ -63,6 +77,21 @@ using (var scope = app.Services.CreateScope())
 
     if (!await userManager.IsInRoleAsync(admin, "Admin"))
         await userManager.AddToRoleAsync(admin, "Admin");
+
+    var profesor = await userManager.FindByEmailAsync("profesor@iue.edu.co");
+    if (profesor == null)
+    {
+        profesor = new ApplicationUser
+        {
+            UserName = "profesor@iue.edu.co",
+            Email = "profesor@iue.edu.co",
+            NombreCompleto = "Profesor Demo"
+        };
+        await userManager.CreateAsync(profesor, "Profesor123!");
+    }
+
+    if (!await userManager.IsInRoleAsync(profesor, "Profesor"))
+        await userManager.AddToRoleAsync(profesor, "Profesor");
 }
 
 app.MapControllerRoute(

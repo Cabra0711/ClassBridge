@@ -9,15 +9,44 @@
 }
 <div class="row g-4">
     <div class="col-12">
-        <div class="card p-4">
-            <h3 class="mb-3">Panel de administración</h3>
-            <p class="text-muted mb-0">Gestión completa de roles, profesores y estudiantes.</p>
+        <div class="page-hero">
+            <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
+                <div>
+                    <span class="badge bg-white text-primary mb-3">Administración</span>
+                    <h3 class="mb-2">Panel de administración</h3>
+                    <p class="mb-0 opacity-75">Gestiona roles, profesores, estudiantes y materias desde un solo lugar.</p>
+                </div>
+                <div class="text-white-50 small">@profesores.Count() profesores · @estudiantes.Count() estudiantes</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12">
+        <div class="row g-3">
+            <div class="col-md-4">
+                <div class="stat-card p-4">
+                    <div class="text-muted small">Profesores activos</div>
+                    <div class="display-6 fw-bold text-primary">@profesores.Count()</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card p-4">
+                    <div class="text-muted small">Estudiantes</div>
+                    <div class="display-6 fw-bold text-success">@estudiantes.Count()</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card p-4">
+                    <div class="text-muted small">Materias configuradas</div>
+                    <div class="display-6 fw-bold text-info">@materias.Count()</div>
+                </div>
+            </div>
         </div>
     </div>
 
     <div class="col-lg-6">
-        <div class="card p-4">
-            <h5 class="mb-3">Crear profesor</h5>
+        <div class="app-card p-4 h-100">
+            <h5 class="mb-3"><i class="bi bi-person-plus-fill me-2 text-success"></i>Crear profesor</h5>
             <form asp-action="CrearProfesor" method="post" class="vstack gap-2">
                 <input class="form-control" name="nombreCompleto" placeholder="Nombre completo" required />
                 <input class="form-control" name="email" type="email" placeholder="Correo@iue.edu.co" required />
@@ -28,12 +57,12 @@
     </div>
 
     <div class="col-lg-6">
-        <div class="card p-4">
-            <h5 class="mb-3">Estudiantes</h5>
+        <div class="app-card p-4 h-100">
+            <h5 class="mb-3"><i class="bi bi-people-fill me-2 text-primary"></i>Estudiantes</h5>
             <div class="vstack gap-2">
                 @foreach (var estudiante in estudiantes)
                 {
-                    <div class="border rounded p-3 d-flex justify-content-between align-items-center">
+                    <div class="border rounded-4 p-3 d-flex justify-content-between align-items-center">
                         <div>
                             <strong>@estudiante.NombreCompleto</strong><br />
                             <small class="text-muted">@estudiante.Email</small>
@@ -49,10 +78,10 @@
     </div>
 
     <div class="col-lg-6">
-        <div class="card p-4">
-            <h5 class="mb-3">Asignar roles</h5>
+        <div class="app-card p-4 h-100">
+            <h5 class="mb-3"><i class="bi bi-shield-lock-fill me-2 text-warning"></i>Asignar roles</h5>
             <div class="table-responsive">
-                <table class="table table-sm align-middle">
+                <table class="table table-sm align-middle table-modern">
                     <thead><tr><th>Usuario</th><th>Rol</th><th>Acción</th></tr></thead>
                     <tbody>
                         @foreach (var user in Model)
@@ -82,14 +111,14 @@
     </div>
 
     <div class="col-lg-6">
-        <div class="card p-4">
-            <h5 class="mb-3">Asignar profesores a materias</h5>
+        <div class="app-card p-4 h-100">
+            <h5 class="mb-3"><i class="bi bi-book-half me-2 text-info"></i>Asignar profesores a materias</h5>
             <div class="vstack gap-3">
                 @foreach (var materia in materias)
                 {
-                    <form asp-action="AsignarProfesorMateria" method="post" class="border rounded p-3">
+                    <form asp-action="AsignarProfesorMateria" method="post" class="border rounded-4 p-3">
                         <input type="hidden" name="materiaId" value="@materia.Id" />
-                        <div class="d-flex justify-content-between gap-3 align-items-center">
+                        <div class="d-flex justify-content-between gap-3 align-items-center flex-wrap">
                             <div>
                                 <strong>@materia.Nombre</strong><br />
                                 <small class="text-muted">@((materia.Profesor?.NombreCompleto) ?? "Sin profesor asignado")</small>

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("IUE.DesatrasadorMVP")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d732499a0c8e0f59cfe42229b341d7f0f384378c")]
 [assembly: System.Reflection.AssemblyProductAttribute("IUE.DesatrasadorMVP")]
 [assembly: System.Reflection.AssemblyTitleAttribute("IUE.DesatrasadorMVP")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

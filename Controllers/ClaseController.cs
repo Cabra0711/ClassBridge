@@ -1,5 +1,6 @@
 using IUE.DesatrasadorMVP.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -13,12 +14,14 @@ public class ClaseController : Controller
     private readonly AppDbContext _db;
     private readonly IHttpClientFactory _http;
     private readonly IConfiguration _config;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-    public ClaseController(AppDbContext db, IHttpClientFactory http, IConfiguration config)
+    public ClaseController(AppDbContext db, IHttpClientFactory http, IConfiguration config, UserManager<ApplicationUser> userManager)
     {
-        _db     = db;
-        _http   = http;
+        _db = db;
+        _http = http;
         _config = config;
+        _userManager = userManager;
     }
 
     // ─────────────────────────────────────────────────────────
@@ -81,10 +84,26 @@ public class ClaseController : Controller
     // GET /Clase/Dashboard/{estudianteId}
     // ─────────────────────────────────────────────────────────
     [Authorize(Roles = "Admin,Estudiante")]
-    public async Task<IActionResult> Dashboard(int id = 1)
+    public async Task<IActionResult> Dashboard(int? id = null)
     {
+        var estudianteId = id ?? 0;
+
+        if (estudianteId <= 0)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user != null)
+            {
+                var estudiantePorUsuario = await _db.Estudiantes.FirstOrDefaultAsync(e => e.Correo == user.Email);
+                if (estudiantePorUsuario != null)
+                    estudianteId = estudiantePorUsuario.Id;
+            }
+        }
+
+        if (estudianteId <= 0)
+            estudianteId = 1;
+
         var estudiantes = await _db.Estudiantes.ToListAsync();
-        ViewBag.Estudiantes = new SelectList(estudiantes, "Id", "Nombre", id);
+        ViewBag.Estudiantes = new SelectList(estudiantes, "Id", "Nombre", estudianteId);
 
         var estudiante = await _db.Estudiantes
             .Include(e => e.Inscripciones)
@@ -92,7 +111,7 @@ public class ClaseController : Controller
                     .ThenInclude(m => m.Clases)
                         .ThenInclude(c => c.VideoClase)
             .Include(e => e.Excusas)
-            .FirstOrDefaultAsync(e => e.Id == id);
+            .FirstOrDefaultAsync(e => e.Id == estudianteId);
 
         if (estudiante == null) return NotFound("Estudiante no encontrado.");
         return View(estudiante);
@@ -121,6 +140,87 @@ public class ClaseController : Controller
         ViewBag.EstudianteId   = estudianteId;
 
         return View(clase);
+    }
+
+    [Authorize(Roles = "Admin,Estudiante")]
+    [HttpGet]
+    public async Task<IActionResult> EnviarExcusa(int claseId, int? estudianteId = null)
+    {
+        var resolvedEstudianteId = estudianteId;
+        if (resolvedEstudianteId == null || resolvedEstudianteId <= 0)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user != null)
+            {
+                var estudiantePorUsuario = await _db.Estudiantes.FirstOrDefaultAsync(e => e.Correo == user.Email);
+                if (estudiantePorUsuario != null)
+                    resolvedEstudianteId = estudiantePorUsuario.Id;
+            }
+        }
+
+        var clase = await _db.Clases.Include(c => c.Materia).FirstOrDefaultAsync(c => c.Id == claseId);
+        var estudiante = resolvedEstudianteId.HasValue
+            ? await _db.Estudiantes.FindAsync(resolvedEstudianteId.Value)
+            : null;
+
+        if (clase == null || estudiante == null)
+            return NotFound();
+
+        ViewBag.Clase = clase;
+        ViewBag.Estudiante = estudiante;
+        return View();
+    }
+
+    [Authorize(Roles = "Admin,Estudiante")]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> EnviarExcusa(int claseId, int? estudianteId = null, string? descripcion = null)
+    {
+        var resolvedEstudianteId = estudianteId;
+        if (resolvedEstudianteId == null || resolvedEstudianteId <= 0)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user != null)
+            {
+                var estudiantePorUsuario = await _db.Estudiantes.FirstOrDefaultAsync(e => e.Correo == user.Email);
+                if (estudiantePorUsuario != null)
+                    resolvedEstudianteId = estudiantePorUsuario.Id;
+            }
+        }
+
+        var clase = await _db.Clases.FindAsync(claseId);
+        var estudiante = resolvedEstudianteId.HasValue
+            ? await _db.Estudiantes.FindAsync(resolvedEstudianteId.Value)
+            : null;
+
+        if (clase == null || estudiante == null)
+            return NotFound();
+
+        var excusa = await _db.Excusas.FirstOrDefaultAsync(e => e.ClaseId == claseId && e.EstudianteId == estudiante.Id);
+        if (excusa == null)
+        {
+            excusa = new Excusa
+            {
+                ClaseId = claseId,
+                EstudianteId = estudiante.Id,
+                Descripcion = descripcion,
+                Estado = EstadoExcusa.Pendiente,
+                FechaEnvio = DateTime.Now
+            };
+            _db.Excusas.Add(excusa);
+        }
+        else
+        {
+            excusa.Descripcion = descripcion;
+            excusa.Estado = EstadoExcusa.Pendiente;
+            excusa.FechaEnvio = DateTime.Now;
+            _db.Excusas.Update(excusa);
+        }
+
+        await _db.SaveChangesAsync();
+
+        TempData["Exito"] = "✅ Tu excusa fue enviada correctamente y está pendiente de revisión.";
+        return RedirectToAction(nameof(Dashboard), new { id = estudiante.Id });
     }
 
     // ─────────────────────────────────────────────────────────

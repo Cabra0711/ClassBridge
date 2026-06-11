@@ -3,69 +3,83 @@
     ViewData["Title"] = "Dashboard del Estudiante";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <h3 class="mb-0"><i class="bi bi-person-circle me-2 text-primary"></i>@Model.Nombre</h3>
-        <small class="text-muted">@Model.Correo</small>
+@if (TempData["Exito"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show rounded-4" role="alert">
+        @TempData["Exito"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
-    <form method="get" action="/Clase/Dashboard" class="d-flex align-items-center gap-2">
-        <label class="text-muted small mb-0">Cambiar estudiante:</label>
-        <select name="id" class="form-select form-select-sm" style="width:180px" onchange="this.form.submit()">
-            @foreach (SelectListItem item in ViewBag.Estudiantes)
-            {
-                if (item.Selected)
-                {
-                    <option value="@item.Value" selected="selected">@item.Text</option>
-                }
-                else
-                {
-                    <option value="@item.Value">@item.Text</option>
-                }
-            }
-        </select>
-    </form>
-</div>
+}
 
-<!-- Estadísticas rápidas -->
 @{
-    int totalClases    = Model.Inscripciones.Sum(i => i.Materia.Clases.Count);
-    int conVideo       = Model.Inscripciones.Sum(i => i.Materia.Clases.Count(c => c.VideoClase != null));
+    int totalClases = Model.Inscripciones.Sum(i => i.Materia.Clases.Count);
     int excusasAprobadas = Model.Excusas.Count(e => e.Estado == EstadoExcusa.Aprobada);
     int excusasPendientes = Model.Excusas.Count(e => e.Estado == EstadoExcusa.Pendiente);
 }
+
+<div class="page-hero mb-4">
+    <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
+        <div>
+            <span class="badge bg-white text-primary mb-3">Dashboard</span>
+            <h3 class="mb-2"><i class="bi bi-person-circle me-2"></i>@Model.Nombre</h3>
+            <p class="mb-0 opacity-75">@Model.Correo</p>
+        </div>
+        <form method="get" action="/Clase/Dashboard" class="d-flex align-items-center gap-2">
+            <label class="text-white-50 small mb-0">Cambiar estudiante:</label>
+            <select name="id" class="form-select form-select-sm" style="width:180px" onchange="this.form.submit()">
+                @foreach (SelectListItem item in ViewBag.Estudiantes)
+                {
+                    if (item.Selected)
+                    {
+                        <option value="@item.Value" selected="selected">@item.Text</option>
+                    }
+                    else
+                    {
+                        <option value="@item.Value">@item.Text</option>
+                    }
+                }
+            </select>
+        </form>
+    </div>
+</div>
+
+<div class="alert alert-warning rounded-4 mb-4 border-0">
+    <i class="bi bi-envelope-paper-fill me-2"></i>
+    ¿Necesitas justificar una clase? Usa el botón <strong>Enviar excusa</strong> en la fila de la clase correspondiente.
+</div>
+
 <div class="row g-3 mb-4">
     <div class="col-6 col-md-3">
-        <div class="card text-center p-3">
+        <div class="stat-card text-center p-3">
             <div class="fs-2 text-primary fw-bold">@Model.Inscripciones.Count</div>
             <div class="text-muted small">Materias inscritas</div>
         </div>
     </div>
     <div class="col-6 col-md-3">
-        <div class="card text-center p-3">
+        <div class="stat-card text-center p-3">
             <div class="fs-2 text-info fw-bold">@totalClases</div>
             <div class="text-muted small">Total clases</div>
         </div>
     </div>
     <div class="col-6 col-md-3">
-        <div class="card text-center p-3">
+        <div class="stat-card text-center p-3">
             <div class="fs-2 text-success fw-bold">@excusasAprobadas</div>
             <div class="text-muted small">Excusas aprobadas</div>
         </div>
     </div>
     <div class="col-6 col-md-3">
-        <div class="card text-center p-3">
+        <div class="stat-card text-center p-3">
             <div class="fs-2 text-warning fw-bold">@excusasPendientes</div>
             <div class="text-muted small">Excusas pendientes</div>
         </div>
     </div>
 </div>
 
-<!-- Materias y clases -->
 @foreach (var inscripcion in Model.Inscripciones)
 {
     var materia = inscripcion.Materia;
-    <div class="card mb-4">
-        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+    <div class="app-card mb-4 overflow-hidden">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center py-3">
             <h5 class="mb-0"><i class="bi bi-book-fill me-2"></i>@materia.Nombre</h5>
             <span class="badge bg-light text-primary">@materia.Clases.Count clase(s)</span>
         </div>
@@ -77,8 +91,8 @@
             else
             {
                 <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead class="table-light">
+                    <table class="table table-hover mb-0 table-modern">
+                        <thead>
                             <tr>
                                 <th>Clase</th>
                                 <th>Fecha</th>
@@ -116,7 +130,12 @@
                                     <td>
                                         @if (excusa == null)
                                         {
-                                            <span class="text-muted">—</span>
+                                            <a asp-controller="Clase" asp-action="EnviarExcusa"
+                                               asp-route-claseId="@clase.Id"
+                                               asp-route-estudianteId="@Model.Id"
+                                               class="btn btn-sm btn-outline-warning">
+                                                <i class="bi bi-envelope-paper-fill"></i> Enviar excusa
+                                            </a>
                                         }
                                         else
                                         {
